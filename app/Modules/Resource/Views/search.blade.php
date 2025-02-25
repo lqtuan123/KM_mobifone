@@ -1,8 +1,6 @@
 @extends('backend.layouts.master')
 
 @section('content')
-<div class="content">
-    @include('backend.layouts.notification')
     <h2 class="intro-y text-lg font-medium mt-10">Danh sách tài nguyên - Kết quả tìm kiếm</h2>
 
     <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
@@ -76,7 +74,6 @@
             </div>
         @endif
     </div>
-</div>
 @endsection
 
 @section('scripts')

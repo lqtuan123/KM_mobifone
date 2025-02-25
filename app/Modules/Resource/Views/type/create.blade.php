@@ -2,8 +2,6 @@
 @section ('scriptop')
 
 @section('content')
-<div class="content">
-    @include('backend.layouts.notification')
     <h2 class="intro-y text-lg font-medium mt-10">Thêm loại tài nguyên</h2>
 
     <div class="grid grid-cols-12 gap-12 mt-5">
@@ -30,5 +28,4 @@
             </form>
         </div>
     </div>
-</div>
 @endsection

@@ -6,8 +6,7 @@
 @endsection
 
 @section('content')
-<div class="content">
-    @include('backend.layouts.notification')
+
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
             Thêm tài nguyên
@@ -95,7 +94,7 @@
             </form>
         </div>
     </div>
-</div>
+
 @endsection
 
 @section('scripts')
@@ -150,7 +149,7 @@
         ClassicEditor
             .create(document.querySelector('#description'), {
                 ckfinder: {
-                    uploadUrl: '{{ route("upload.ckeditor") . '?_token=' . csrf_token() }}'
+                    uploadUrl: '{{ route('admin.upload.ckeditor') . '?_token=' . csrf_token() }}'
                 },
                 mediaEmbed: {
                     previewsInData: true

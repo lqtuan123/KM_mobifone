@@ -100,19 +100,6 @@ class DatabaseSeeder extends Seeder
                 'status'=>'active',
             ],
         ]);
-
-        $this->call([
-            
-            
-            HinhThucThiSeeder::class,
-            ResourceSeeder::class,
-            DonviSeeder::class,
-            ChuyennganhSeeder::class,
-            NganhSeeder::class,
-            EventTypeSeeder::class,
-            TMotionSeeder::class,
-        ]);
-
     
 
     }

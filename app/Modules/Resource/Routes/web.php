@@ -4,9 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Resource\Controllers\ResourceController;
 use App\Modules\Resource\Controllers\ResourceLinkTypeController;
 use App\Modules\Resource\Controllers\ResourceTypeController;
-use App\Modules\Resource\Controllers\FileDownloadController;
-Route::get('/download/{token}', [FileDownloadController::class, 'download'])->name('download.file');
-Route::post('/linkdownload', [FileDownloadController::class, 'maildownload'])->name('download.mailfile');
 
 Route::group(['prefix' => 'admin/', 'as' => 'admin.'], function () {
     

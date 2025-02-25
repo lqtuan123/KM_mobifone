@@ -170,8 +170,6 @@ $detail = \App\Models\SettingDetail::find(1); ?>
                                 <li><a href="{{ route('home') }}">Trang chủ</a></li>
                                 <li><a href="{{ route('front.book.index') }}">Sách</a></li>
                                 <li><a href="{{ route('front.tblogs.index') }}">Tương tác</a></li>
-                                <li><a href="">Đề thi</a></li>
-                                <li><a href="">Sự kiện</a></li>
                                 <li><a href="">Liên hệ</a></li>
                             </ul>
                         </nav>
@@ -301,8 +299,6 @@ $detail = \App\Models\SettingDetail::find(1); ?>
                                 <li><a href="{{ route('home') }}">Trang chủ</a></li>
                                 <li><a href="{{ route('front.book.index') }}">Sách</a></li>
                                 <li><a href="{{ route('front.tblogs.index') }}">Tương tác</a></li>
-                                <li><a href="">Đề thi</a></li>
-                                <li><a href="">Sự kiện</a></li>
                                 <li><a href="">Liên hệ</a></li>
                             </ul>
                         </nav>

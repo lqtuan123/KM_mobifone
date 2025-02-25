@@ -7,8 +7,6 @@
 @endsection
 
 @section('content')
-<div class="content">
-    @include('backend.layouts.notification')
     <div class="intro-y flex items-center mt-8">
         <h2 class="text-lg font-medium mr-auto">
             Chỉnh sửa tài nguyên
@@ -98,7 +96,6 @@
             </form>
         </div>
     </div>
-</div>
 @endsection
 
 @section('scripts')

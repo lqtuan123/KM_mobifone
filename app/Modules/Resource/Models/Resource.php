@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Http\Controllers\FilesController;
 use Illuminate\Support\Facades\Storage;
-use App\Modules\Resource\Models\FileDownload;
-use Aws\S3\S3Client;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Http;
 
 class Resource extends Model
 {
@@ -26,83 +22,21 @@ class Resource extends Model
         'link_code',
         'code'
     ];
-    public static function createDownloadLink($resource)
-    {
-        // Tạo token duy nhất
-            
-        $token = Str::random(32);
-
-        if($resource->link_code == 'youtube')
-            return null;
-        // Lưu thông tin vào cơ sở dữ liệu
-        $filedownload = FileDownload::where('file_path',$resource->url)->where('expires_at' ,'>',NOW())->first();
-        if(!$filedownload)
-        {
-            $filedownload = FileDownload::create([
-                'file_path' => $resource->url,
-                'download_token' => $token,
-                'is_downloaded' => false,
-                'expires_at' => now()->addDay(), // Link hết hạn sau 1 ngày
-            ]);
-        }
-        $token = $filedownload->download_token;
-        
-        // Trả link tải
-        return route('download.file', ['token' => $token]);
-    }
 
     //create
-    public static function createUrlResource($title,$url,$type_code,$code='tblog')
-    {
-        $data = [
-            'title' => $title,
-            'code' => $code,
-            'slug' => self::generateSlug($title),
-        ];
-        $data['type_code'] =$type_code;
-        $data['link_code'] = 'file';
-       
-        $response = Http::get($url);
-
-        if ($response->ok()) {
-            $fileName = 'unknown_file';
-            $contentDisposition = $response->header('Content-Disposition');
-            $mimeType = $response->header('Content-Type');
-            $data['file_type'] =  $mimeType ;
-            // Lấy tên file từ Content-Disposition
-            if ($contentDisposition) {
-                preg_match('/filename="(.+)"/', $contentDisposition, $matches);
-                $fileName = $matches[1] ?? 'unknown_file';
-            }
-        
-            // Nếu không có tên file, suy đoán từ Content-Type
-            if ($fileName === 'unknown_file' && $mimeType) {
-                switch ($mimeType) {
-                    case 'application/pdf':
-                        $fileName = 'file.pdf';
-                        break;
-                    case 'audio/mpeg':
-                        $fileName = 'file.mp3';
-                        break;
-                    case 'image/jpeg':
-                        $fileName = 'file.jpg';
-                        break;
-                    default:
-                        $fileName = 'file.unknown';
-                }
-            }
-            $data['file_name'] = $fileName;
-        }
-        if(isset( $data['file_name']))
-            $data['title'] = $data['file_name'];
-        $data['url'] = $url;
-      
-        return self::create($data);
-    }
-
     public static function createResource($request, $file = null, $moduleName = null)
     {
         $title = $request->title ?? 'Resource Default Title';
+        if ($file) {
+            $existingResource = Resource::where('file_name', $file->getClientOriginalName())
+                ->where('file_size', $file->getSize())
+                ->where('code', $moduleName)
+                ->first();
+    
+            if ($existingResource) {
+                return $existingResource; // Trả về resource đã tồn tại
+            }
+        }
         $data = [
             'title' => $title,
             'code' => $moduleName,
@@ -232,18 +166,28 @@ class Resource extends Model
     }
 
     // Tạo slug
-    public static function generateSlug($title)
+    public static function generateSlug($title, $model = null, $existingSlugs = [])
     {
-        $slug = Str::slug($title);
-        $count = self::where('slug', $slug)->count();
 
-        if($count > 0)
-        {
-            $slug .= uniqid();
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        // Lấy danh sách slug trùng lặp từ cơ sở dữ liệu
+        $existingSlugsFromDb = Resource::pluck('slug')->toArray();
+
+        // Kết hợp danh sách đã có và từ cơ sở dữ liệu
+        $existingSlugs = array_merge($existingSlugs, $existingSlugsFromDb);
+
+        while (in_array($slug, $existingSlugs)) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
         }
 
         return $slug;
     }
+
+
 
     // Lấy ID YouTube từ URL.
     private static function getYouTubeID($url)
